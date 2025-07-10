@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "eformsign 온보딩 튜토리얼",
+  "version": "1.0",
+  "description": "eformsign 화면 위에 온보딩/튜토리얼 오버레이를 띄워줍니다.",
+  "permissions": [],
+  "host_permissions": [
+    "https://www.eformsign.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.eformsign.com/eform/index.html"],
+      "js": ["intro.min.js", "content.js"], 
+      "css": ["introjs.min.css","style.css"]           
+    }
+  ]
+}
