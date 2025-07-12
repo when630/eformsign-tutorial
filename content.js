@@ -9,6 +9,89 @@ window.TutorialApp = (() => {
         'showTemplateDocsStep'
     ];
 
+    const menuItems = [
+        {
+            id: '#create_doc_bundle',
+            label: '새 문서 작성',
+            desc: '여러 개의 문서를 하나의 묶음으로 생성할 수 있어요. 서명 요청이 필요한 경우에 유용해요.'
+        },
+        {
+            id: '#create_uform',
+            label: '내 파일로 문서 작성',
+            desc: 'PDF나 한글, 워드 등 파일을 업로드해 전자문서를 만들 수 있어요.'
+        },
+        {
+            id: '#create_doc',
+            label: '템플릿으로 문서 작성',
+            desc: '자주 사용하는 양식을 템플릿으로 저장해두고, 간편하게 문서를 작성할 수 있어요.'
+        },
+        {
+            id: '#list_temp_uform',
+            label: '내 파일 보관함',
+            desc: '업로드한 원본 파일을 저장해두는 곳이에요. 필요할 때 다시 사용할 수 있어요.'
+        },
+        {
+            id: '#list_doc_bundle',
+            label: '문서함',
+            desc: '내가 생성하거나 받은 모든 문서를 한 곳에서 확인할 수 있어요.'
+        },
+        {
+            id: '#document_list_ri',
+            label: '처리할 문서함',
+            desc: '내가 서명하거나 확인해야 하는 문서들이 여기에 모여 있어요.'
+        },
+        {
+            id: '#document_list_ip',
+            label: '진행 중 문서함',
+            desc: '아직 모든 서명이 끝나지 않은 문서들을 확인할 수 있어요.'
+        },
+        {
+            id: '#document_list_ai',
+            label: '완료 문서함',
+            desc: '서명과 처리가 완료된 문서들을 보관하는 공간이에요.'
+        },
+        {
+            id: '#document_list_mass',
+            label: '일괄 작성 문서함',
+            desc: '한 번에 여러 명에게 문서를 보낼 때 사용한 일괄 작성 문서를 모아둔 공간이에요.'
+        },
+        {
+            id: '#share_document_list',
+            label: '공유 문서함',
+            desc: '다른 사용자와 공유한 문서들을 이곳에서 확인할 수 있어요.'
+        },
+        {
+            id: '#trash_document',
+            label: '휴지통',
+            desc: '삭제한 문서들이 임시 보관되는 곳이에요. 일정 기간이 지나면 완전히 삭제돼요.'
+        },
+        {
+            id: '#manage_signature',
+            label: '내 서명',
+            desc: '내 서명, 도장, 이니셜 등을 관리하고 등록할 수 있어요.'
+        },
+        {
+            id: '#external_address',
+            label: '연락처',
+            desc: '자주 문서를 보내는 외부 수신자의 정보를 등록하고 관리할 수 있어요.'
+        },
+        {
+            id: '#list_form',
+            label: '템플릿 관리',
+            desc: '내가 만든 문서 템플릿을 수정하거나 삭제할 수 있어요.'
+        },
+        {
+            id: '#manage_company',
+            label: '회사 관리',
+            desc: '회사 계정에 소속된 사용자, 부서 등을 관리할 수 있어요.'
+        },
+        {
+            id: '#usage',
+            label: '이용 현황',
+            desc: '최근 문서 작성 현황, 사용 건수 등을 확인할 수 있어요.'
+        }
+    ];
+
     function loadTutorialStyles() {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -102,12 +185,18 @@ window.TutorialApp = (() => {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
 
-        let top = 0, left = 0;
+        let top = 0;
+        let left = 0;
 
-        if (rect.right + offset + tooltipRect.width < vw) {
-            top = rect.top + window.scrollY;
+        const prefersRight = rect.right + offset + tooltipRect.width < vw;
+        const prefersBottom = rect.bottom + offset + tooltipRect.height < vh;
+
+        if (prefersRight) {
+            // 오른쪽에 배치, 단 툴팁이 하단을 넘어가지 않도록 보정
+            top = rect.top + window.scrollY - tooltipRect.height / 2 + rect.height / 2;
+            top = Math.max(window.scrollY + 10, top); // 너무 위로 가지 않도록 보정
             left = rect.right + offset + window.scrollX;
-        } else if (rect.bottom + offset + tooltipRect.height < vh) {
+        } else if (prefersBottom) {
             top = rect.bottom + offset + window.scrollY;
             left = rect.left + window.scrollX;
         } else {
@@ -274,6 +363,7 @@ window.TutorialApp = (() => {
             enableScroll();
             goToStep(currentStepIndex + 1);
         };
+
         const prevBtn = tooltip.querySelector('.efsg-prev-btn');
         if (prevBtn) {
             prevBtn.onclick = () => {
@@ -283,7 +373,7 @@ window.TutorialApp = (() => {
                 enableScroll();
                 goToStep(currentStepIndex - 1);
             };
-        }
+        };
     }
 
     function showTemplateDocsStep() {
@@ -321,7 +411,17 @@ window.TutorialApp = (() => {
             highlight.remove();
             mask.remove();
             enableScroll();
-            alert('모든 튜토리얼이 완료됐어요! 🎉');
+
+            // 메뉴 열기
+            const menuToggleBtn = document.getElementById('lnbOpen');
+            if (menuToggleBtn && typeof menuToggleBtn.click === 'function') {
+                menuToggleBtn.click(); // 메뉴 강제 열기
+            }
+
+            // 약간의 시간 차를 두고 다음 스텝 실행 (메뉴 DOM이 그려지는 시간 확보)
+            setTimeout(() => {
+                goToStep(currentStepIndex + 1);
+            }, 300); // 300ms 정도 지연
         };
         const prevBtn = tooltip.querySelector('.efsg-prev-btn');
         if (prevBtn) {
@@ -332,11 +432,77 @@ window.TutorialApp = (() => {
                 enableScroll();
                 goToStep(currentStepIndex - 1);
             };
-        }
+        };
+    }
+
+    function createMenuStep(id, label, desc) {
+        return function () {
+            const target = document.querySelector(id);
+            if (!target) return;
+
+            // 메뉴 열기 시도
+            const menuBtn = document.getElementById('lnbOpen');
+            if (menuBtn && !document.body.classList.contains('lnb_open')) {
+                menuBtn.click();
+            }
+
+            // 스크롤 위치 조정
+            const scrollEl = document.querySelector('#mCSB_1');
+            if (scrollEl) scrollEl.scrollTop = target.offsetTop - 100;
+
+            const html = `
+                <div>
+                    <div class="efsg-title">📌 ${label}</div>
+                    <div class="efsg-desc">
+                        ${desc}
+                    </div>
+                </div>
+            `;
+
+            const mask = document.createElement('div');
+            mask.className = 'efsg-highlight-overlay';
+            document.body.appendChild(mask);
+
+            setOverlayHole(target);
+            const highlight = addHighlightBox(target);
+
+            const { tooltip } = createTutorialTooltip(html, () => {
+                highlight.remove();
+                mask.remove();
+            }, target, true, true);
+
+            requestAnimationFrame(() => {
+                positionTooltip(tooltip, target);
+            });
+
+            tooltip.querySelector('.efsg-next-btn').onclick = () => {
+                tooltip.remove();
+                highlight.remove();
+                mask.remove();
+                enableScroll();
+                goToStep(currentStepIndex + 1);
+            };
+            tooltip.querySelector('.efsg-prev-btn').onclick = () => {
+                tooltip.remove();
+                highlight.remove();
+                mask.remove();
+                enableScroll();
+                goToStep(currentStepIndex - 1);
+            };
+        };
+    }
+
+    function extendWithMenuSteps() {
+        menuItems.forEach((item, i) => {
+            const methodName = `showMenuStep_${i}`;
+            steps.push(methodName);
+            TutorialApp[methodName] = createMenuStep(item.id, item.label, item.desc);
+        });
     }
 
     function init() {
         loadTutorialStyles();
+        extendWithMenuSteps();
         showTutorialStartPrompt();
     }
 
