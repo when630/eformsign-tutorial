@@ -10,7 +10,7 @@
     border-radius: 32px; 
     box-shadow: 0 16px 64px rgba(0,0,0,0.3);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    width: 95vw; max-width: 1000px; height: 80vh; max-height: 700px;
+    width: 95vw; max-width: 800px; height: 80vh; max-height: 500px;
     padding: 0; z-index: 10000; display: flex; align-items: flex-end;
     overflow: hidden;
 }
@@ -79,7 +79,7 @@
 /* 하이라이트 오버레이 */
 .efsg-highlight-overlay {
     position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.7); z-index: 9997;
+    background: rgba(0,0,0,0.6); z-index: 9997;
     pointer-events: none;
 
     /* 마스크 적용을 위한 기본 설정 */
@@ -133,6 +133,49 @@
     border-radius: 10px; padding: 12px 24px;
     font-size: 16px; cursor: pointer; font-weight: bold;
     box-shadow: 0 4px 12px rgba(70,149,247,0.3);
+}
+
+.efsg-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    z-index: 10001;
+    transition: color 0.2s;
+}
+.efsg-close-btn:hover {
+    color: #000;
+}
+
+.efsg-step-indicator {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.efsg-step-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.efsg-step-dot.active {
+  background-color: #4095f7;
+}
+
+.efsg-btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 /* 반응형 */

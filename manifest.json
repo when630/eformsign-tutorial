@@ -9,7 +9,7 @@
   ],
   "content_scripts": [
     {
-      "matches": ["https://www.eformsign.com/eform/index.html"],
+      "matches": ["https://www.eformsign.com/eform/*"],
       "js": ["intro.min.js", "content.js"], 
       "css": ["introjs.min.css","style.css"]           
     }
