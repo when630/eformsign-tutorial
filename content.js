@@ -1,6 +1,7 @@
 console.log('[TutorialApp] content.js loaded');
 
 window.TutorialApp = (() => {
+    // 스텝 설정
     let currentStepIndex = 0;
     const steps = [
         'showWelcomeStep',
@@ -8,7 +9,7 @@ window.TutorialApp = (() => {
         'showDocumentTabsStep',
         'showTemplateDocsStep'
     ];
-
+    // 메뉴 스텝 설정
     const menuItems = [
         {
             id: '#create_doc_bundle',
@@ -92,6 +93,8 @@ window.TutorialApp = (() => {
         }
     ];
 
+    /*====== 공통 유틸 ======*/
+    // style.css 연결
     function loadTutorialStyles() {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
@@ -99,6 +102,7 @@ window.TutorialApp = (() => {
         document.head.appendChild(link);
     }
 
+    // 스크롤 잠금 메서드
     function disableScroll() {
         document.body.style.overflow = 'hidden';
     }
@@ -106,6 +110,7 @@ window.TutorialApp = (() => {
         document.body.style.overflow = '';
     }
 
+    // 강조 효과 추가
     function addHighlightBox(target) {
         const rect = target.getBoundingClientRect();
         const highlight = document.createElement('div');
@@ -118,6 +123,7 @@ window.TutorialApp = (() => {
         return highlight;
     }
 
+    // 강조 부분 구멍 뚫기
     function setOverlayHole(element) {
         const rect = element.getBoundingClientRect();
         const maskSVG = `
@@ -142,6 +148,7 @@ window.TutorialApp = (() => {
         overlay.style.webkitMaskImage = `url("data:image/svg+xml,${encoded}")`;
     }
 
+    // 스텝 진행 사항 표시
     function createStepIndicator(currentIndex) {
         const dots = steps.map((_, idx) => {
             return `<span class="efsg-step-dot${idx === currentIndex ? ' active' : ''}"></span>`;
@@ -149,6 +156,7 @@ window.TutorialApp = (() => {
         return `<div class="efsg-step-indicator">${dots}</div>`;
     }
 
+    // 툴팁 생성
     function createTutorialTooltip(htmlContent, onClose, highlightTarget = null, showPrev = false, showNav = true) {
         disableScroll();
 
@@ -179,6 +187,7 @@ window.TutorialApp = (() => {
         return { tooltip };
     }
 
+    // 툴팁 위치 선정 (타겟으로부터 offset만큼 떨어짐)
     function positionTooltip(tooltip, target, offset = 20) {
         const rect = target.getBoundingClientRect();
         const tooltipRect = tooltip.getBoundingClientRect();
@@ -208,6 +217,7 @@ window.TutorialApp = (() => {
         tooltip.style.left = `${left}px`;
     }
 
+    // 이전, 다음
     function goToStep(index) {
         const stepName = steps[index];
         if (TutorialApp[stepName]) {
@@ -216,6 +226,7 @@ window.TutorialApp = (() => {
         }
     }
 
+    // 튜토 시작 프롬프트
     function showTutorialStartPrompt() {
         const overlay = document.createElement('div');
         overlay.className = 'efsg-overlay';
@@ -247,6 +258,7 @@ window.TutorialApp = (() => {
         };
     }
 
+    // 환영 스텝
     function showWelcomeStep() {
         const html = `
             <div class="efsg-character-area">
@@ -275,6 +287,7 @@ window.TutorialApp = (() => {
         };
     }
 
+    // 문서 상태 확인 스텝
     function showMyFilesMenuStep() {
         const target = document.querySelector('article.major_area');
         if (!target) return;
@@ -327,6 +340,7 @@ window.TutorialApp = (() => {
         }
     }
 
+    // 내 파일로 문서 작성 스텝
     function showDocumentTabsStep() {
         const target = document.querySelector('.createuform_wrap');
         if (!target) return;
@@ -376,6 +390,7 @@ window.TutorialApp = (() => {
         };
     }
 
+    // 템플릿으로 문서 작성 스텝
     function showTemplateDocsStep() {
         const target = document.querySelector('.createform_wrap');
         if (!target) return;
@@ -435,6 +450,7 @@ window.TutorialApp = (() => {
         };
     }
 
+    // 메뉴 탭 스텝
     function createMenuStep(id, label, desc) {
         return function () {
             const target = document.querySelector(id);
@@ -447,6 +463,7 @@ window.TutorialApp = (() => {
             }
 
             // 스크롤 위치 조정
+            // 설명 칸이 중앙에 오도록 함
             const scrollEl = document.querySelector('#mCSB_1');
             if (scrollEl) scrollEl.scrollTop = target.offsetTop - 100;
 
@@ -492,6 +509,7 @@ window.TutorialApp = (() => {
         };
     }
 
+    // 메뉴 스텝을 'showMenuStep_${i}'로 현재 스텝에 추가
     function extendWithMenuSteps() {
         menuItems.forEach((item, i) => {
             const methodName = `showMenuStep_${i}`;
@@ -515,6 +533,7 @@ window.TutorialApp = (() => {
     };
 })();
 
+// DOM이 호출되거나 이미 호출되어 있으면 TutorialApp 실행
 if (document.readyState === 'loading') {
     window.addEventListener('DOMContentLoaded', TutorialApp.init);
 } else {
